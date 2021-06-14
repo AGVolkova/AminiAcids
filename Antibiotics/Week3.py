@@ -1,10 +1,10 @@
-RNA_codon_table=open('C:/Users/AVolkova/Desktop/Биоинформатика/RNA_codon_table.txt')
+#RNA_codon_table=open('C:/Users/AVolkova/Desktop/Биоинформатика/RNA_codon_table.txt')
 
-Data=RNA_codon_table.read().splitlines()
-Codons={}
-for i in Data:
-    Codons[i[0:3]]=i[-1]
-print(Codons)
+#Data=RNA_codon_table.read().splitlines()
+#Codons={}
+#for i in Data:
+#    Codons[i[0:3]]=i[-1]
+#print(Codons)
 
 def RNA_to_peptide(RNA):
     Peptide=Codons[RNA[0:3]]
@@ -54,8 +54,8 @@ def Peptide_Encoding_Problem(dna, Peptide):
             Genes.append(dna[i: i+Length])
     return Genes
 
-Bacillus_brevis_Genome=open('C:/Users/AVolkova/Desktop/Биоинформатика/Bacillus_brevis.txt')
-Bacillus=Bacillus_brevis_Genome.read().replace('\n', '')
+#Bacillus_brevis_Genome=open('C:/Users/AVolkova/Desktop/Биоинформатика/Bacillus_brevis.txt')
+#Bacillus=Bacillus_brevis_Genome.read().replace('\n', '')
 #print(len(Peptide_Encoding_Problem(Bacillus, 'VKLFPWFNQY')))
 
 AminoAcids_Mass={'G':57, 'A':71, 'S':87, 'P':97, 'V':99, 'T':101, 'C':103, 'I':113, 'L':113, 'N':114, 'D':115, 'K':128, 'Q':128, 'E':129, 'M':131, 'H':137, 'F':147, 'R':156, 'Y':163, 'W':186}
@@ -95,5 +95,28 @@ def CyclicSpectrum(Peptide, Alphabet, AminoAcidMass):
     return Sorted_list
 
 
-a=[str(i) for i in CyclicSpectrum('QCMQEQCIDAHI', All_AminoAcids, AminoAcids_Mass)]
-print(" ".join(a))
+#a=[str(i) for i in CyclicSpectrum('QCMQEQCIDAHI', All_AminoAcids, AminoAcids_Mass)]
+#print(" ".join(a))
+
+Alphabet = {57: 'G', 71: 'A', 87: 'S', 97: 'P', 99: 'V', 101: 'T', 103: 'C', 113:'I/L', 114: 'N', 115: 'D', 128: 'K/Q', 129: 'E', 131: 'M', 137: 'H', 147: 'F', 156: 'R', 163: 'Y', 186: 'W'}
+
+def CountingMass(Mass, masslist):
+    if Mass == 0: return 1, masslist
+    if Mass < 57: return 0, masslist
+    if Mass in masslist: return masslist[Mass], masslist
+    n = 0
+    for i in Alphabet:
+        k, masslist = CountingMass(Mass - i, masslist)
+        n += k
+    masslist[Mass] = n
+    return n, masslist
+
+
+#def CyclopeptideSequencing(Spectrum):
+ #   CandidatePeptides=['']
+  #  FinalPeptides=[]
+   # for i in CandidatePeptides:
+    #    if sum(i)=max(Spectrum):
+     #       if CyclicSpectrum(i, Alphabet, AminoAcidMass)=Spectrum and i not in FinalPeptides:
+      #          FinalPeptides.append(i)
+       #     CandidatePeptides=[x for x in CandidatePeptides if x !=i]
