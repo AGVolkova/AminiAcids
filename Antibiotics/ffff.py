@@ -17,12 +17,6 @@ def Expand(Peptides):
     return Peptides
 #print(Expand([[57], [71], [87], [97], [99], [101], [103], [113], [114], [115], [128], [129], [131], [137], [147], [156], [163], [186]]))
 
-def Consistency(Maly, Bolshoy):
-    for i in Maly:
-        if i in Bolshoy:
-            Bolshoy=[x for x in Bolshoy if x!=i]
-        else: return 'No'
-    return 'Yes'
 
 def MassesToPeptode(Masses):
     Masses=[i for i in Masses if i !=0]
@@ -32,9 +26,7 @@ def MassesToPeptode(Masses):
             P = P + Alphabet[Masses[i]]
     else:
         return None
-
     return P
-
 
 def CyclicSpectrum(Peptide, Alphabet, AminoAcidMass):
     PrefixMass=[0]
@@ -53,25 +45,48 @@ def CyclicSpectrum(Peptide, Alphabet, AminoAcidMass):
     return Sorted_list
 #print('yes', CyclicSpectrum(MassesToPeptode([113, 128, 186]), All_AminoAcids, AminoAcids_Mass))
 
+def LinearSpectrum(Peptide, Alphabet, AminoAcidMass):
+    PrefixMass=[0]
+    for i in range(1, len(Peptide)+1):
+        for j in Alphabet:
+            if Peptide[i-1]==j:
+                PrefixMass.append(PrefixMass[i-1]+AminoAcidMass[j])
+    LinearSpectrum=[0]
+    for i in range(0, len(Peptide)):
+        for j in range(i+1, len(Peptide)+1):
+            LinearSpectrum.append(PrefixMass[j]-PrefixMass[i])
+    Sorted_list=sorted(LinearSpectrum)
+    return Sorted_list
+#print(LinearSpectrum('GKLENW',All_AminoAcids, AminoAcids_Mass))
+
+def Consistency(Maly, Bolshoy):
+    for i in Maly:
+        if i in Bolshoy:
+            Bolshoy=[x for x in Bolshoy if x!=i]
+        else: return 'No'
+    return 'Yes'
+#print(Consistency(LinearSpectrum('GKLENW',All_AminoAcids, AminoAcids_Mass), [0, 57, 113, 114, 128, 129, 185, 186, 241, 242, 243, 298, 300, 356, 370, 427, 429, 484, 541, 542, 670, 727]))
+
 def CyclopeptideSequencing(S):
-    Spectrum=S.split(' ')
-    Spectrum=[int(x) for x in Spectrum]
+    kkk=S.split(' ')
+    Spectrum=[int(x) for x in kkk]
     CandidatePeptides=['']
     FinalPeptides=[]
     while len(CandidatePeptides)!=0:
         CandidatePeptides=Expand(CandidatePeptides)
         for i in CandidatePeptides:
+            #print(sum(i), max(Spectrum))
             if sum(i)==max(Spectrum):
+                #print(CyclicSpectrum(MassesToPeptode(i), All_AminoAcids, AminoAcids_Mass))
                 if CyclicSpectrum(MassesToPeptode(i), All_AminoAcids, AminoAcids_Mass)==Spectrum and i not in FinalPeptides:
                     FinalPeptides.append(i)
                 CandidatePeptides=[x for x in CandidatePeptides if x !=i]
-            elif Consistency(i, Spectrum)=='No':
+            elif Consistency(LinearSpectrum(MassesToPeptode(i),All_AminoAcids, AminoAcids_Mass), Spectrum)=='No':
                 CandidatePeptides = [x for x in CandidatePeptides if x != i]
+        print(len(CandidatePeptides))
     for i in FinalPeptides:
         stroka=[str(k) for k in i]
         print('-'.join(stroka))
     return FinalPeptides
 
-print(CyclopeptideSequencing('0 71 99 101 103 114 128 129 147 156 170 200 213 229 242 248 250 259 284 285 299 341 343 351 356 376 388 406 412 413 442 455 459 479 490 507 513 535 541 558 569 589 593 606 635 636 642 660 672 692 697 705 707 749 763 764 789 798 800 806 819 835 848 878 892 901 919 920 934 945 947 949 977 1048'))
-# for i in FinalPeptides:
-#     print(' '.join(i))
+print(CyclopeptideSequencing('0 71 97 99 103 113 113 114 115 131 137 196 200 202 208 214 226 227 228 240 245 299 311 311 316 327 337 339 340 341 358 408 414 424 429 436 440 442 453 455 471 507 527 537 539 542 551 554 556 566 586 622 638 640 651 653 657 664 669 679 685 735 752 753 754 756 766 777 782 782 794 848 853 865 866 867 879 885 891 893 897 956 962 978 979 980 980 990 994 996 1022 1093'))
