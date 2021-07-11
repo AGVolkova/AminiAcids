@@ -50,3 +50,44 @@ def Trim(Leaderboard, Spectrum, N):
     for i in Leaderboard:
         dict[i]=Cyclopeptide_Scoring(i, Spectrum)
     trimmed_list=sorted(dict.values)[0:N]
+
+def Expand(Peptides):
+    if len(Peptides)==1:
+        Peptides= [[int(x)] for x in Alphabet]
+        #Peptides.append([0])
+    else:
+        l=[]
+        for i in Peptides:
+            for j in Alphabet:
+                a = i.copy()
+                a.append(int(j))
+                l.append(a)
+        Peptides=l
+        #Peptides.append([0])
+    return Peptides
+def MassesToPeptode(Masses):
+    Masses=[i for i in Masses if i !=0]
+    if Masses and len(Masses):
+        P=Alphabet[Masses[0]]
+        for i in range(1, len(Masses)):
+            P = P + Alphabet[Masses[i]]
+    else:
+        return None
+    return P
+
+def LeaderboardCyclopeptideSequencing(S, N):
+    kkk = S.split(' ')
+    Spectrum = [int(x) for x in kkk]
+    Leaderboard=set()
+    LeaderPeptide=[]
+    while len(Leaderboard)!=0:
+        Leaderboard=Expand(Leaderboard)
+        for i in Leaderboard:
+            if sum(i)==max(Spectrum):
+                if Cyclopeptide_Scoring(i, Spectrum)>Score(LeaderPeptide, Spectrum):
+                    LeaderPeptide=i
+            elif sum (i)>max(Spectrum):
+                Leaderboard.remove(i)
+        Leaderboard=Trim(Leaderboard, Spectrum, N)
+        return LeaderPeptide
+print(LeaderboardCyclopeptideSequencing('0, 71, 113, 129, 147, 200, 218, 260, 313, 331, 347, 389, 460,', 10))
