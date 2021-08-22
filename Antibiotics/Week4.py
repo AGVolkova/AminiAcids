@@ -49,6 +49,9 @@ def Cyclopeptide_Scoring(Theoretical, Exper):
             Score = Score + 1
             Exp.remove(Theoretical)
     #print(Score)
+    # if Score==83:
+    #     print(Theoretical)
+    #print(Score)
     return Score
 #print(Cyclopeptide_Scoring([113], [0, 71, 113, 129, 147, 200, 218, 260, 313, 331, 347, 389, 460]))
 def Trim(Leaderboard, Spectrum, N):
@@ -111,19 +114,39 @@ def LeaderboardCyclopeptideSequencing(S, N):
         for j in Leaderboard:
             LeadB.append([int(k) for k in j])
         Leaderboard=LeadB
-        print(Leaderboard)
+        #print(Leaderboard)
         for i in Leaderboard:
             if sum(i)==max(Spectrum):
                 if Cyclopeptide_Scoring(CyclicSpectrum(MassesToPeptode(i), All_AminoAcids, AminoAcids_Mass), Spectrum)>Cyclopeptide_Scoring(LeaderPeptide, Spectrum):
                     LeaderPeptide=i
-                    Leaderboard=[k for k in Leaderboard if k!=i]
+                    #Leaderboard=[k for k in Leaderboard if k!=i]
             elif sum(i)>max(Spectrum):
-                print('Yes1', sum(i))
+                #print('Yes1', sum(i))
                 Leaderboard=[k for k in Leaderboard if k!=i]
-            elif Consistency(LinearSpectrum(MassesToPeptode(i),All_AminoAcids, AminoAcids_Mass), Spectrum)=='No':
-                Leaderboard=[k for k in Leaderboard if k!=i]
+            #elif Consistency(LinearSpectrum(MassesToPeptode(i),All_AminoAcids, AminoAcids_Mass), Spectrum)=='No':
+             #   Leaderboard=[k for k in Leaderboard if k!=i]
 
         Trimmed=Trim(Leaderboard, Spectrum, N)
         Leaderboard=[k.split( ) for k in Trimmed]
+    print(Leaderboard)
+    print(len(LeaderPeptide))
     return '-'.join([str(x) for x in LeaderPeptide])
-print(LeaderboardCyclopeptideSequencing('0 71 87 97 97 97 99 99 101 114 114 128 128 129 131 131 147 156 156 170 185 186 186 186 196 196 211 215 215 226 242 244 253 257 257 262 275 284 285 293 312 313 314 314 317 317 340 342 343 352 371 371 372 382 382 385 389 401 412 440 441 443 445 448 448 449 460 468 471 473 479 481 486 496 499 499 500 532 557 557 559 568 571 574 576 578 578 585 593 596 597 597 604 627 631 634 646 654 656 656 663 675 682 685 688 692 694 702 705 724 725 743 753 753 755 762 762 774 783 785 789 790 793 813 816 819 822 833 838 842 849 850 852 853 871 890 891 909 914 916 918 936 939 939 944 947 948 949 950 960 967 970 1005 1005 1008 1019 1019 1036 1037 1038 1045 1046 1057 1064 1064 1067 1070 1075 1091 1095 1102 1104 1106 1133 1133 1135 1135 1137 1156 1165 1167 1175 1178 1188 1193 1201 1205 1220 1222 1223 1224 1230 1231 1232 1234 1249 1253 1261 1266 1276 1279 1287 1289 1298 1317 1319 1319 1321 1321 1348 1350 1352 1359 1363 1379 1384 1387 1390 1390 1397 1408 1409 1416 1417 1418 1435 1435 1446 1449 1449 1484 1487 1494 1504 1505 1506 1507 1510 1515 1515 1518 1536 1538 1540 1545 1563 1564 1583 1601 1602 1604 1605 1612 1616 1621 1632 1635 1638 1641 1661 1664 1665 1669 1671 1680 1692 1692 1699 1701 1701 1711 1729 1730 1749 1752 1760 1762 1766 1769 1772 1779 1798 1798 1800 1808 1820 1823 1827 1850 1857 1857 1858 1861 1869 1876 1876 1878 1880 1883 1886 1895 1897 1897 1922 1954 1955 1955 1958 1968 1973 1975 1981 1983 1986 1994 2005 2006 2006 2009 2011 2013 2014 2042 2053 2065 2069 2072 2072 2082 2083 2083 2102 2111 2112 2114 2137 2137 2140 2140 2141 2142 2161 2169 2170 2179 2192 2197 2197 2201 2210 2212 2228 2239 2239 2243 2258 2258 2268 2268 2268 2269 2284 2298 2298 2307 2323 2323 2325 2326 2326 2340 2340 2353 2355 2355 2357 2357 2357 2367 2383 2454', 197))
+#print(LeaderboardCyclopeptideSequencing('0 97 99 113 114 115 128 128 147 147 163 186 227 241 242 244 244 256 260 261 262 283 291 309 330 333 340 347 385 388 389 390 390 405 435 447 485 487 503 504 518 544 552 575 577 584 599 608 631 632 650 651 653 672 690 691 717 738 745 770 779 804 818 819 827 835 837 875 892 892 917 932 932 933 934 965 982 989 1039 1060 1062 1078 1080 1081 1095 1136 1159 1175 1175 1194 1194 1208 1209 1223 1322', 1000))
+def Convolution(S):
+    kkk = S.split(' ')
+    Spectrum = sorted([int(x) for x in kkk])
+    Spec=Spectrum[:-1]
+    print(Spectrum, Spec)
+    res=[]
+    k=0
+    for i in Spectrum[::-1]:
+        print(i)
+        for j in Spec[::-1]:
+            print(i, j)
+            res.append(i-j)
+
+        Spectrum=Spectrum[:-1]
+        Spec=Spec[:-1]
+    otbor=list(filter(lambda x:x!=0, res))
+    return ' '.join([str(x) for x in otbor])
+print(Convolution('0 57 71 87 99 101 113 114 128 137 156 185 188 214 224 227 227 236 242 293 298 301 323 325 328 341 355 364 380 399 415 424 438 451 454 456 478 481 486 537 543 552 552 555 565 591 594 623 642 651 665 666 678 680 692 708 722 779'))
